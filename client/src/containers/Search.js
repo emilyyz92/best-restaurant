@@ -4,7 +4,8 @@ class Search extends Component {
   constructor() {
     super();
     this.state = {
-      keyword: ""
+      keyword: "",
+      location: ""
     }
     this.search = this.search.bind(this)
   }
@@ -15,13 +16,15 @@ class Search extends Component {
 
   handleChange = (e) => {
     this.setState({
-      keyword: e.target.value
+      [e.target.name]: e.target.value
     })
   }
 
   search = (e) => {
     if(e.keyCode === 13) {
-      this.props.search(this.state.keyword)
+      if(this.state.keyword !== "" || this.state.location !== "") {
+        this.props.search(this.state.keyword)
+      }
     }
   }
 
@@ -29,10 +32,15 @@ class Search extends Component {
     return (
       <div className="searchBox">
         <input type="text" value={this.state.keyword}
+        name="keyword"
         onChange={this.handleChange}
         placeholder="Search keywords or cuisine"
-        onKeyDown={this.search}
         />
+        <input type="text" value={this.state.location}
+        name="location" onChange={this.handleChange}
+        placeholder="Zip Code or Street Address"
+        />
+        <button>Find Near Me</button>
       </div>
     )
   }
