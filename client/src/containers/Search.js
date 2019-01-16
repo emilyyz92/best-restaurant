@@ -11,7 +11,7 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.search)
+    document.addEventListener('keydown', this.keyDownSearch)
   }
 
   handleChange = (e) => {
@@ -20,26 +20,33 @@ class Search extends Component {
     })
   }
 
-  search = (e) => {
+  keyDownSearch = (e) => {
     if(e.keyCode === 13) {
-      if(this.state.keyword !== "" || this.state.location !== "") {
-        this.props.search(this.state.keyword)
-      }
+      this.search()
+    }
+  }
+
+  search = () => {
+    if(this.state.keyword !== "" || this.state.location !== "") {
+      this.props.search(this.state.keyword, this.state.location)
     }
   }
 
   render() {
     return (
       <div className="searchBox">
+        <label>Search Keyword</label>
         <input type="text" value={this.state.keyword}
         name="keyword"
         onChange={this.handleChange}
         placeholder="Search keywords or cuisine"
         />
+        <label>Location</label>
         <input type="text" value={this.state.location}
         name="location" onChange={this.handleChange}
         placeholder="Zip Code or Street Address"
         />
+        <button onClick={this.search}>Search Food</button>
         <button>Find Near Me</button>
       </div>
     )

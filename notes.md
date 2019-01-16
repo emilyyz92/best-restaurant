@@ -1,7 +1,9 @@
-show restaurants from google map
-get yelp review from yelp API
-sort by distance
-scrape opentable for reservation info
+show rating by the side
+sort by rating, distance by default
+separate restaurants from quick bites
+filter by available now
+user can have friends*
+refer restaurant to friends*
 
 The code is written in ES6 as much as possible *
 
