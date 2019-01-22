@@ -1,0 +1,13 @@
+.front-page-logos {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20%;
+  grid-template-rows: auto;
+  grid-gap: 5%;
+  align-items: center;
+  justify-items: center;
+  padding: 5%;
+}
+
+.front-page-logos img {
+  max-height: 100px;
+}

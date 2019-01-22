@@ -4,7 +4,6 @@ class Search extends Component {
   constructor() {
     super();
     this.state = {
-      keyword: "",
       location: ""
     }
     this.search = this.search.bind(this)
@@ -27,20 +26,14 @@ class Search extends Component {
   }
 
   search = () => {
-    if(this.state.keyword !== "" || this.state.location !== "") {
-      this.props.search(this.state.keyword, this.state.location)
+    if(this.state.location !== "") {
+      this.props.search(this.state.location)
     }
   }
 
   render() {
     return (
       <div className="searchBox">
-        <label>Search Keyword</label>
-        <input type="text" value={this.state.keyword}
-        name="keyword"
-        onChange={this.handleChange}
-        placeholder="Search keywords or cuisine"
-        />
         <label>Location</label>
         <input type="text" value={this.state.location}
         name="location" onChange={this.handleChange}

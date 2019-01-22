@@ -1,16 +1,20 @@
 import React from 'react'
 
-const ListItem = ({res, getStars}) => (
-  <a href={res.yelp_url} key={res.id} className="list-group-item" >
-    <div className="justify-content-between">
-      <h5 className="mb-1">{res.name}</h5>
-      <img src={getStars(res)} alt={res.rating} />
-      <small>{res.review_count}</small>
+const ListItem = ({res, toggleEmbed, menu}) => (
+  <a href="#" className="list-group-item"
+  onClick={toggleEmbed} data-id={res.id}>
+    <div onClick={toggleEmbed} className="justify-content-between"
+    data-id={res.id}>
+      <h5 className="mb-1" data-id={res.id}>
+        {res.name}
+      </h5>
+      {menu[res.id] && <iframe src={res.menu_url} title={res.id}
+        width="80%" height="300"/>}
     </div>
   </a>
 )
 
-const RestaurantList = ({list, getStars, sortByRating}) => (
+const RestaurantList = ({list, sortByRating, showMenu, toggleEmbed}) => (
   <div className="restaurants-list">
     <div className="res-button-group">
       <button onClick={sortByRating}>Sort by rating</button>
@@ -19,7 +23,8 @@ const RestaurantList = ({list, getStars, sortByRating}) => (
     </div>
     <ul className="list-group res-list">
       {list.map(res =>
-        res && <ListItem res={res} getStars={getStars}/>
+        res && <ListItem res={res} toggleEmbed={toggleEmbed}
+        menu={showMenu} key={res.id} />
       )}
     </ul>
   </div>

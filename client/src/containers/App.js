@@ -1,79 +1,41 @@
 import React, { Component } from 'react';
 import '../css/App.css';
+import Welcome from '../presentation/Welcome'
 import Search from './Search'
 import RestaurantList from '../presentation/RestaurantList'
 
 class App extends Component {
   constructor() {
     super();
-    this.getReviews = this.getReviews.bind(this)
     this.state = {
       restsByDist: [],
       restsByRating: [],
-      sortBy: 'distance'
+      sortBy: 'distance',
+      showEmbed: false,
+      logos: []
     }
   }
 
   //when user enters to search
-  handleSearch = (keyword, location) => {
+  handleSearch = (location) => {
     const locString = location.split(' ').join('+')
-    this.postGoogleData(keyword, locString)
+    this.postGoogleData(locString)
   }
 
   //calls api to get google search
-  postGoogleData = (keyword, address) => {
-    fetch(`/api/google/search?keyword=${keyword}&address=${address}`, {
+  postGoogleData = (address) => {
+    fetch(`/api/google/search?address=${address}`, {
       method: 'POST',
     }).then(resp => resp.json())
-    .then(json => this.getReviews(json))
-    .catch(error => console.log(error))
-  }
-
-  //get yelp review info after google search
-  getReviews = (jsonRestaurants) => {
-    debugger;
-    jsonRestaurants.forEach(
-      res => this.patchYelpData(res)
-    )
-  }
-
-  patchYelpData = (res) => {
-    const name = res['name']
-    const lat = res['location'].split(',')[0]
-    const lng = res['location'].split(',')[1]
-    const googleID = res['google_id']
-    //api returns json of each restaurant object
-    fetch(`/api/yelp/search?name=${name}&lat=${lat}&lng=${lng}&googleid=${googleID}`, {
-      method: 'PATCH'
-    }).then(resp => resp.json())
     .then(json => this.setRestaurants(json))
+    .catch(error => console.log(error))
   }
 
   //save restaurants to state by distance
   setRestaurants = (jsonRes) => {
     this.setState({
-      restsByDist: [
-        ...this.state.restsByDist,
-        jsonRes
-      ]
+      restsByDist: jsonRes
     })
-  }
-
-  //render yelp star images
-  getStars = (res) => {
-    const yelpImages = {
-      1: "/small_1.png",
-      1.5: "/small_1_half.png",
-      2: '/small_2.png',
-      2.5: '/small_2_half.png',
-      3: '/small_3.png',
-      3.5: '/small_3_half.png',
-      4: '/small_4.png',
-      4.5: '/small_4_half.png',
-      5: '/small_5.png'
-    }
-    let rating = res['rating'].toString()
-    return '/yelp_images' + yelpImages[rating]
   }
 
   sortByRating = () => {
@@ -83,6 +45,26 @@ class App extends Component {
       sortBy: 'rating',
       restsByRating: sortedRests
     })
+  }
+
+  toggleEmbed = (e) => {
+    e.preventDefault()
+    let resID = e.target.dataset.id
+    if(this.state.showEmbed.resID) {
+      this.setState({
+        showEmbed: {
+          ...this.state.showEmbed,
+          [resID]: !this.state.showEmbed.resID
+        }
+      })
+    } else {
+      this.setState({
+        showEmbed: {
+          ...this.state.showEmbed,
+          [resID]: true
+        }
+      })
+    }
   }
 
   render() {
@@ -95,9 +77,11 @@ class App extends Component {
     return (
       <div className="App">
         <Search search={this.handleSearch} />
+        <Welcome />
         <RestaurantList list={renderedList}
-        getStars={this.getStars}
-        sortByRating={this.sortByRating}
+          sortByRating={this.sortByRating}
+          showMenu={this.state.showEmbed}
+          toggleEmbed={this.toggleEmbed}
         />
       </div>
     );
