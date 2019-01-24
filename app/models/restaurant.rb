@@ -37,7 +37,7 @@ class Restaurant < ApplicationRecord
   def self.find_nearby(user_location)
     current_res = self.all.select do |res|
       if res.location
-        self.get_distance(user_location, res.location) <= 2
+        self.get_distance(user_location, res.location) <= 1
       else
         false
       end

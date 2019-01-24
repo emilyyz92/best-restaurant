@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BrowserRouter, Route, Link } from "react-router-dom";
 
 class Search extends Component {
   constructor() {
@@ -39,7 +40,9 @@ class Search extends Component {
         name="location" onChange={this.handleChange}
         placeholder="Zip Code or Street Address"
         />
-        <button onClick={this.search}>Search Food</button>
+        <button onClick={this.search}>
+          <Link to="/results">Search Food</Link>
+        </button>
         <button>Find Near Me</button>
       </div>
     )
