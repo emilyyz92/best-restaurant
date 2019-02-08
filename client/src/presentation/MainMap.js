@@ -9,8 +9,8 @@ const defaultCenter = (userLatLng) => (
   }
 )
 
-const MainMap = ({restaurants, userLatLng}) => (
-  <div style={{height: "500px", width: "50%"}}>
+const MainMap = ({restaurants, userLatLng, showMarkerDetail}) => (
+  <div className="map-container" style={{height: "700px", width: "50%"}}>
     <GoogleMapReact
       bootstrapURLKeys={{key: process.env.REACT_APP_GOOG_KEY}}
       defaultZoom={15}

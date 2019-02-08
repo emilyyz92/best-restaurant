@@ -110,18 +110,16 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => ({
   restsList: state.rests.restsList,
   restsShown: state.rests.restsShown
-}
+})
 
-const mapDispatchToProps = dispatch => {
-  return {
+const mapDispatchToProps = (dispatch) => ({
     setRestaurants: rests => dispatch({
       type: 'setRestaurants',
       rests: rests
     })
-  }
-}
+})
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
