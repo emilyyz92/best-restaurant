@@ -2,7 +2,6 @@ import { combineReducers } from 'redux'
 
 const defaultRests = {
   restsList: [],
-  restsShown: []
 }
 
 function restResults(state=defaultRests, action) {
@@ -12,12 +11,6 @@ function restResults(state=defaultRests, action) {
         ...state,
         restsList: action.rests
       };
-    case "turnPage":
-      let index = action.index
-      return {
-        ...state,
-        restsShown: state.restsShown.slice(10*(index-1), index-1)
-      }
     default:
       return state
   }

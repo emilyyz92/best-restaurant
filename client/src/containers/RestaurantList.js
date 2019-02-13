@@ -8,47 +8,92 @@ class RestaurantList extends Component {
   constructor() {
     super();
     this.state = {
-      restList: []
+      restShown: [],
+      mapCenter: null,
+      pages: [],
+      pageIndex: 1
     }
   }
 
+  componentDidMount() {
+    this.setState({
+      mapCenter: this.props.userLatLng
+    })
+  }
+  //
   componentDidUpdate(prevProps) {
     if(this.props.restsList !== prevProps.restsList) {
+      const totalPage = this.props.restsList.length
+      const pages = new Array(Math.floor(totalPage / 10) + 1)
+      for (let i = 0; i < pages.length; i++) {pages[i] = i+1}
       this.setState({
-        restList: this.props.restsList
+        restShown: this.props.restsList.slice(0, 10),
+        pages: pages
       })
     }
   }
 
+  turnPage = (page) => {
+    // debugger;
+    // this.setState({
+    //   restShown: this.props.restsList.slice(10*(page-1), 10*page),
+    //   pageIndex: page
+    // })
+  }
+
+  toggleResDetail = (e) => {
+    e.preventDefault()
+    this.showResOnMap(e)
+  }
+
   showResOnMap = (e) => {
     const resID = parseInt(e.target.dataset.id)
-    const res = this.state.restList.filter(res => res.id === resID)
-    const index = this.state.restList.findIndex(res => res.id === resID)
-    const new_res = {...res[0], active: !res[0].active}
-    this.state.restList[index] = new_res
+    const res = this.state.restShown.filter(res => res.id === resID)[0]
+    const index = this.state.restShown.findIndex(res => res.id === resID)
+    const new_res = {
+      ...res,
+      active: !res.active,
+      showEmbed: !res.showEmbed
+    }
+    const newResList = [...this.state.restShown]
+    newResList.splice(index, 1, new_res)
     this.setState({
-      restList: this.state.restList
+      restShown: newResList,
+      mapCenter: res.location
     })
   }
 
   render() {
     const toggleEmbed = this.props.toggleEmbed
     const showMenu = this.props.showMenu
-    const userLatLng = this.props.userLatLng
-
+    let mapCenter;
+    if(this.state.mapCenter) {
+      mapCenter = this.state.mapCenter
+    } else {
+      mapCenter = this.props.userLatLng
+    }
     return (
       <div className="restaurants-list">
         <div className="res-list">
           <ul className="list-group">
-            {this.state.restList.map(res =>
-              res && <ListItem res={res} toggleEmbed={toggleEmbed}
-              menu={showMenu} key={res.id}
-              showOnMap={this.showResOnMap} />
+            {this.state.restShown.map((res, index) =>
+              res && <ListItem res={res}
+              toggleDetail={this.toggleResDetail}
+              key={index} index={index} />
             )}
           </ul>
+          <div class="btn-group mr-2" role="group">
+            {this.state.pages && this.state.pages.map(page =>
+              <button type="button" className="btn btn-primary"
+                onClick={this.turnPage(page)}
+                key={page}>
+                {page}
+              </button>
+            )}
+          </div>
         </div>
-        <MainMap userLatLng={userLatLng}
-          restaurants={this.state.restList}
+        <MainMap userLatLng={mapCenter}
+          restaurants={this.state.restShown}
         />
       </div>
     )
@@ -57,13 +102,6 @@ class RestaurantList extends Component {
 
 const mapStateToProps = (state) => ({
   restsList: state.rests.restsList,
-  restsShown: state.rests.restsShown,
-  pageIndex: state.pageIndex
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  pageControl: type => dispatch({type: type}),
-  turnPage: index => dispatch({type: 'turnPage', index: index})
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(RestaurantList);
+export default connect(mapStateToProps)(RestaurantList);

@@ -35,15 +35,21 @@ class Search extends Component {
   render() {
     return (
       <div className="searchBox">
-        <label>Location</label>
-        <input type="text" value={this.state.location}
-        name="location" onChange={this.handleChange}
-        placeholder="Zip Code or Street Address"
-        />
-        <button onClick={this.search}>
-          <Link to="/results">Search Food</Link>
-        </button>
-        <button>Find Near Me</button>
+        <div className="input-group">
+          <div className="input-group-prepend">
+            <span className="input-group-text">Your Location</span>
+          </div>
+          <input type="text" value={this.state.location}
+            name="location" onChange={this.handleChange}
+            placeholder="Zip Code or Street Address"
+          />
+        </div>
+        <div className="buttons">
+          <button onClick={this.search}>
+            <Link to="/results">Search Food</Link>
+          </button>
+          <button>Find Near Me</button>
+        </div>
       </div>
     )
   }

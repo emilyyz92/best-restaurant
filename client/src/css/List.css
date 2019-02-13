@@ -18,3 +18,20 @@ iframe {
 .res-list {
   width: 50%;
 }
+
+.btn-group {
+  margin-top: 1em;
+}
+
+.list-group-item .justify-content-between h5 {
+  display: inline;
+}
+
+.list-marker-id {
+  width: 1.5em;
+  display: inline;
+  border-radius: 20%;
+  background-color: #007bff;
+  color: #fff;
+  float: right;
+}

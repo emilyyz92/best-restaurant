@@ -16,9 +16,9 @@ const MainMap = ({restaurants, userLatLng, showMarkerDetail}) => (
       defaultZoom={15}
       center={defaultCenter(userLatLng)}
     >
-      {restaurants.map(res => (
+      {restaurants.map((res, index) => (
         <Marker key={res.id}
-          res={res}
+          res={res} index={index}
           lat={res.location.split(",")[0]}
           lng={res.location.split(",")[1]}
         />

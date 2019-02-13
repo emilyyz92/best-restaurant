@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { Popover, PopoverHeader } from 'reactstrap'
 
 const style = {
-  borderRadius: "2px",
-  fontSize: "1em",
-  backgroundColor: "#00ace6",
-  border: "2px solid #bfbfbf",
+  borderRadius: "20%",
+  width: "2.5em",
+  backgroundColor: "#007bff",
+  border: "2px solid #007bff",
   fontStyle: "bold",
-  display: 'inline'
+  display: 'inline',
+  color: "#fff"
 };
 
 class Marker extends Component {
@@ -42,7 +43,7 @@ class Marker extends Component {
           style={style} onClick={this.showDetail}
           id={`marker-${res.id}`}
         >
-          {res.name}
+          {this.props.index + 1}
         </div>
         <Popover placement="top" isOpen={this.state.popOver}
           target={`marker-${res.id}`} toggle={this.togglePopover} >

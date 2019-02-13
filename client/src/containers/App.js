@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 import '../css/App.css';
+import {setRestaurants} from '../actions/resActions'
 import Welcome from '../presentation/Welcome'
 import Search from './Search'
 import RestaurantList from './RestaurantList'
+import Navbar from '../presentation/Navbar'
+import RestaurantForm from './RestaurantForm'
 
 class App extends Component {
   constructor() {
@@ -13,7 +16,6 @@ class App extends Component {
       restsByDist: [],
       restsByRating: [],
       sortBy: 'distance',
-      showEmbed: false,
       logos: [],
       userLatLng: "40.7638356,-73.9817048",
       listPageIndex: 1
@@ -44,18 +46,19 @@ class App extends Component {
     })
     fetch(`/api/google/search?address=${latLng}`, {method: "POST"})
     .then(resp => resp.json())
-    .then(json => this.setRestaurants(json))
+    .then(json => this.saveRestaurants(json))
     .catch(error => this.setState({
       error: error
     }))
   }
 
   //save restaurants to state by distance
-  setRestaurants = (jsonRes) => {
-    this.setState({
-      restsByDist: jsonRes
-    })
-    this.props.setRestaurants(jsonRes)
+  saveRestaurants = (jsonRes) => {
+    this.props.setRestaurantsToState(jsonRes)
+  }
+
+  searchRest = (e) => {
+    e.preventDefault()
   }
 
   sortByRating = () => {
@@ -67,40 +70,21 @@ class App extends Component {
     })
   }
 
-  //toggles view of each restaurant info
-  toggleEmbed = (e) => {
-    e.preventDefault()
-    let resID = e.target.dataset.id
-    this.setState({
-      showEmbed: {
-        ...this.state.showEmbed,
-        [resID]: !this.state.showEmbed[resID]
-      }
-    })
-  }
-
   render() {
-    let renderedList = []
-    let pageIndex = this.state.listPageIndex
-    if(this.state.sortBy === 'distance') {
-      renderedList = this.state.restsByDist.slice(10*(pageIndex-1), pageIndex-1)
-    } else if (this.state.sortBy === 'rating') {
-      renderedList = this.state.restsByRating.slice(10*(pageIndex-1), pageIndex-1)
-    }
     return (
       <Router>
         <div className="App">
+          <Navbar searchRest={this.searchRest}/>
           <Route exact path="/" render={() => (
             <>
               <Search search={this.handleSearch} />
               <Welcome />
             </>
           )} />
+          <Route exact path="/restaurants/new" render={RestaurantForm} />
           <Route exact path="/results" render={routerProps =>
             <RestaurantList {...routerProps}
               sortByRating={this.sortByRating}
-              showMenu={this.state.showEmbed}
-              toggleEmbed={this.toggleEmbed}
               userLatLng={this.state.userLatLng}
             />}
           />
@@ -110,16 +94,8 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  restsList: state.rests.restsList,
-  restsShown: state.rests.restsShown
-})
-
 const mapDispatchToProps = (dispatch) => ({
-    setRestaurants: rests => dispatch({
-      type: 'setRestaurants',
-      rests: rests
-    })
+    setRestaurantsToState: rests => dispatch(setRestaurants(rests)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);
